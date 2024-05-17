@@ -1,0 +1,9 @@
+pip install django psycopg2 
+pip install pymysql
+pip install django mysqlclient
+
+python manage.py makemigrations
+
+python manage.py migrate 
+
+python manage.py runserver 

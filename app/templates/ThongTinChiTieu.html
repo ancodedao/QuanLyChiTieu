@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông Tin Chi Tiêu</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        
+        #sidebar {
+            width: 200px;
+            height: 100vh;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+        }
+        
+        #sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-bottom: 1px solid #444;
+        }
+        
+        #sidebar a:hover {
+            background-color: #555;
+        }
+        
+        #content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        
+        h2 {
+            color: #333;
+        }
+        
+        form {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        textarea {
+            width: calc(100% - 16px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-decoration: none;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .messages {
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        
+        li.error {
+            color: red;
+        }
+        
+        li.success {
+            color: green;
+        }
+        #content {
+            
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #8BC34A;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <h2><a href="{% url 'home' %}">Menu</a></h2>
+        <a href="{% url 'lich_chi_tieu' %}">Nội Dung Lịch</a>
+        <a href="{% url 'thongtin_chitieu' %}">Thông Tin Chi Tiêu</a>
+        <a href="{% url 'thunhap' %}">Thu Nhập</a>
+        <a href="{% url 'nguoidung' %}">Người Dùng</a>
+        <a href="{% url 'login' %}">Logout</a>
+    </div>
+    <div id="content">
+        <h2>Thông Tin Chi Tiêu</h2>
+        <div id="messages">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li class="{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Thêm Thông Tin Chi Tiêu</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã Thông Tin Chi Tiêu</th>
+                    <th>Ngày</th>
+                    <th>Số Tiền</th>
+                    <th>Nội Dung</th>
+                    <th>Ghi Chú</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for thongtin in thongtin_list %}
+                <tr>
+                    <td>{{ thongtin.MaTTCT }}</td>
+                    <td>{{ thongtin.Ngay }}</td>
+                    <td>{{ thongtin.SoTien }}</td>
+                    <td>{{ thongtin.NoiDung }}</td>
+                    <td>{{ thongtin.GhiChu }}</td>
+                    <td>
+                        <form action="{% url 'delete_thongtin_chitieu' id=thongtin.MaTTCT %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

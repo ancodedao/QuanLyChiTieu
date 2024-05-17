@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Người Dùng</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        #sidebar {
+            width: 200px;
+            height: 100vh;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+        }
+        #sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-bottom: 1px solid #444;
+        }
+        #sidebar a:hover {
+            background-color: #555;
+        }
+        #content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #8BC34A; /* Slightly grey background to keep the focus on the form */
+            overflow-y: auto;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-decoration: none;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <h2><a href="{% url 'home' %}">Menu</a></h2>
+        <a href="{% url 'lich_chi_tieu' %}">Nội Dung Lịch</a>
+        <a href="{% url 'thongtin_chitieu' %}">Thông Tin Chi Tiêu</a>
+        <a href="{% url 'thunhap' %}">Thu Nhập</a>
+        <a href="{% url 'nguoidung' %}">Người Dùng</a>
+        <a href="{% url 'login' %}">Logout</a>
+    </div>
+    <div id="content">
+        <h2>Thông Tin Người Dùng</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="full_name">Tên đầy đủ:</label>
+                <input type="text" id="full_name" name="full_name" value="{{ user.full_name }}">
+            </div>
+            <div class="form-group">
+                <label for="gender">Giới tính:</label>
+                <input type="text" id="gender" name="gender" value="{{ user.gender }}">
+            </div>
+            <div class="form-group">
+                <label for="birth_year">Năm sinh:</label>
+                <input type="number" id="birth_year" name="birth_year" value="{{ user.birth_year }}">
+            </div>
+            <input type="submit" value="Cập nhật">
+        </form>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('form').on('submit', function(event) {
+        event.preventDefault(); // Ngăn chặn gửi form theo cách thông thường
+        var form_data = $(this).serialize(); // Lấy dữ liệu từ form
+        $.ajax({
+            url: '{% url "nguoidung" %}', // URL từ Django URLconf, đảm bảo tên url đã được khai báo
+            method: 'POST',
+            data: form_data,
+            success: function(response) {
+                alert('Cập nhật thành công'); // Hiển thị thông báo cho người dùng
+                // Cập nhật thông tin trên trang nếu cần
+            },
+            error: function() {
+                alert('Có lỗi xảy ra, vui lòng thử lại');
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>
